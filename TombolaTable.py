@@ -27,3 +27,17 @@ class TombolaTable(QAbstractTableModel):
         if role != Qt.ItemDataRole.DisplayRole or orientation != Qt.Orientation.Horizontal:
             return QVariant()
         return self._data.columns[col]
+
+    def setData(self, index, value, role=Qt.ItemDataRole.EditRole):
+        if not index.isValid():
+            return False
+
+        if role == Qt.ItemDataRole.EditRole:
+            self._data[index.row()][index.column()] = value
+            print("entered", value)
+            self.dataChanged.emit(
+                index, index, (Qt.ItemDataRole.EditRole,)
+            )  # NOT WORKING
+        else:
+            return False
+        return True

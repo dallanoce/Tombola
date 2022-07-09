@@ -22,53 +22,20 @@ class Manager(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
         self.originalPalette = QApplication.palette()
-        """
-        styleComboBox = QComboBox()
-        styleComboBox.addItems(QStyleFactory.keys())
-
-        styleLabel = QLabel("&Style:")
-        styleLabel.setBuddy(styleComboBox)
-
-        self.useStylePaletteCheckBox = QCheckBox("&Use style's standard palette")
-        self.useStylePaletteCheckBox.setChecked(True)
-
-        disableWidgetsCheckBox = QCheckBox("&Disable widgets")
-        """
 
         self.createTopLeftGroupBox()
         self.createTopRightGroupBox()
-        # self.createBottomLeftTabWidget()
-        # self.createBottomRightGroupBox()
-        # self.createProgressBar()
-
-        """
-        styleComboBox.textActivated.connect(self.changeStyle)
-        self.useStylePaletteCheckBox.toggled.connect(self.changePalette)
-        disableWidgetsCheckBox.toggled.connect(self.topLeftGroupBox.setDisabled)
-        disableWidgetsCheckBox.toggled.connect(self.topRightGroupBox.setDisabled)
-        disableWidgetsCheckBox.toggled.connect(self.bottomLeftTabWidget.setDisabled)
-        disableWidgetsCheckBox.toggled.connect(self.bottomRightGroupBox.setDisabled)
-        """
 
         topLayout = QHBoxLayout()
-        # topLayout.addWidget(styleLabel)
-        # topLayout.addWidget(styleComboBox)
-        # topLayout.addStretch(1)
-        # topLayout.addWidget(self.useStylePaletteCheckBox)
-        # topLayout.addWidget(disableWidgetsCheckBox)
 
         mainLayout = QGridLayout()
         mainLayout.addLayout(topLayout, 0, 0, 1, 2)
         mainLayout.addWidget(self.topLeftGroupBox, 1, 0)
         mainLayout.addWidget(self.topRightGroupBox, 1, 1)
-        # mainLayout.addWidget(self.bottomLeftTabWidget, 2, 0)
-        # mainLayout.addWidget(self.bottomRightGroupBox, 2, 1)
-        # mainLayout.addWidget(self.progressBar, 3, 0, 1, 2)
         mainLayout.setRowStretch(1, 1)
         mainLayout.setRowStretch(2, 1)
         mainLayout.setColumnStretch(0, 1)
         mainLayout.setColumnStretch(1, 1)
-        # self.setLayout(mainLayout)
 
         self.central_widget.setLayout(mainLayout)
 
@@ -78,17 +45,6 @@ class Manager(QMainWindow):
     def changeStyle(self, styleName):
         QApplication.setStyle(QStyleFactory.create(styleName))
         # self.changePalette()
-
-    def changePalette(self):
-        if (self.useStylePaletteCheckBox.isChecked()):
-            QApplication.setPalette(QApplication.style().standardPalette())
-        else:
-            QApplication.setPalette(self.originalPalette)
-
-    def advanceProgressBar(self):
-        curVal = self.progressBar.value()
-        maxVal = self.progressBar.maximum()
-        self.progressBar.setValue(curVal + (maxVal - curVal) // 100)
 
     def createTopLeftGroupBox(self):
         self.topLeftGroupBox = QGroupBox("Visualizza una vecchia partita")
@@ -203,5 +159,5 @@ class Manager(QMainWindow):
         step = self.game_step_new.checkedButton().text()
         table = f'{year}0815_{type[0].lower()}{step[-1]}.json'
         print()
-        self.gallery = TombolaNew()
+        self.gallery = TombolaNew(table)
         self.gallery.show()
