@@ -103,54 +103,66 @@ class TombolaNew(QDialog):
 
     def insert_number(self):
         number_tobe_inserted = self.number.text()
+        number_tobe_inserted_old = number_tobe_inserted
 
         if len(number_tobe_inserted) == 1:
-            number_tobe_inserted_old = number_tobe_inserted
+
             number_tobe_inserted = f'0{number_tobe_inserted}'
             cifra = True
         else:
             cifra=False
-
+        actual_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         try:
             row = int(number_tobe_inserted[0])
             col = int(number_tobe_inserted[1])
             df_temp = self.df.copy()
 
-            df_temp.at[row, col] = int(number_tobe_inserted)
+            if (df_temp.loc[row, col] == number_tobe_inserted) or (df_temp.loc[row, col] == number_tobe_inserted_old):
+                self.text_area.appendPlainText(f'[{actual_time}]: Errore inserimento: {number_tobe_inserted} già presente')
+                return
+
+            df_temp.at[row, col] = number_tobe_inserted
 
             self.df = df_temp
-            actual_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
             if cifra:
                 self.model.setData(self.model.index(col,row), number_tobe_inserted_old)
-                self.text_area.appendPlainText(f'[{actual_time}]: inserito n. {number_tobe_inserted_old}')
+                self.text_area.appendPlainText(f'[{actual_time}]: Inserito n. {number_tobe_inserted_old}')
             else:
                 self.model.setData(self.model.index(col, row), number_tobe_inserted)
-                self.text_area.appendPlainText(f'[{actual_time}]: inserito n. {number_tobe_inserted}')
+                self.text_area.appendPlainText(f'[{actual_time}]: Inserito n. {number_tobe_inserted}')
 
+
+            self.df.to_csv(f'data/{self.table_name}_temp.json')
 
         except:
             self.error_value(number_tobe_inserted)
+            self.text_area.appendPlainText(f'[{actual_time}]: Errore tentato inserimento: {number_tobe_inserted}')
 
     def remove_number(self):
         number_tobe_inserted = self.number.text()
+        number_tobe_inserted_old = number_tobe_inserted
+        actual_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if len(number_tobe_inserted) == 1:
-            number_tobe_inserted_old = number_tobe_inserted
             number_tobe_inserted = f'0{number_tobe_inserted}'
             cifra = True
         else:
             cifra=False
+
 
         try:
             row = int(number_tobe_inserted[0])
             col = int(number_tobe_inserted[1])
             df_temp = self.df.copy()
 
-            df_temp.at[row, col] = int(number_tobe_inserted)
+            if (df_temp.loc[row, col] != number_tobe_inserted) and (df_temp.loc[row, col] != number_tobe_inserted_old):
+                self.text_area.appendPlainText(f'[{actual_time}]: Errore rimozione: {number_tobe_inserted} non presente')
+                return
 
+            df_temp.at[row, col] = '_'
             self.df = df_temp
 
-            actual_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if cifra:
                 self.model.setData(self.model.index(col,row), '_')
                 self.text_area.appendPlainText(f'[{actual_time}]: Rimosso n. {number_tobe_inserted_old}')

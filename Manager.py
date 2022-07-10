@@ -2,6 +2,8 @@
 
 import os
 import sys
+from datetime import datetime
+
 import pandas as pd
 from PyQt6.QtCore import QDateTime, Qt, QTimer
 from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
@@ -154,10 +156,10 @@ class Manager(QMainWindow):
         new.clicked.connect(self.new_game)
 
     def new_game(self):
-        year = self.year_list.currentText()
+        year = datetime.now().year
         type = self.game_type_new.checkedButton().text()
         step = self.game_step_new.checkedButton().text()
-        table = f'{year}0815_{type[0].lower()}{step[-1]}.json'
+        table = f'{year}0815_{type[0].lower()}{step[-1]}'
         print()
         self.gallery = TombolaNew(table)
         self.gallery.show()
